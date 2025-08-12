@@ -21,4 +21,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "NewsApp-Dagger"
 include(":app")
+include(":domain")
+include(":data")
+include(":presentation")
  
