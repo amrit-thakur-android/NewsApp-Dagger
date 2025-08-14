@@ -1,7 +1,8 @@
 package com.amritthakur.newsapp.entity
 
 data class Article(
-    val source: Source,
+    val sourceId: String,
+    val sourceName: String,
     val author: String,
     val title: String,
     val description: String,
