@@ -4,7 +4,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class ArticleDto(
-    val source: SourceDto?,
+    val source: ArticleSourceDto?,
     val author: String?,
     val title: String?,
     val description: String?,
