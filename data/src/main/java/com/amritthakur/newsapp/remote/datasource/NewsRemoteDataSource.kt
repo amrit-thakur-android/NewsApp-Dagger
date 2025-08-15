@@ -26,7 +26,7 @@ class NewsRemoteDataSource(
                 if (newsResponse != null) {
                     Result.Success(newsResponse)
                 } else {
-                    Result.Error(-2, "ParsingError", "Empty response body")
+                    Result.Error(-2, "parsingError", "Empty response body")
                 }
             } else {
                 response.toError()
@@ -45,7 +45,7 @@ class NewsRemoteDataSource(
                 if (sourcesResponse != null) {
                     Result.Success(sourcesResponse)
                 } else {
-                    Result.Error(-2, "ParsingError", "Empty response body")
+                    Result.Error(-2, "parsingError", "Empty response body")
                 }
             } else {
                 response.toError()
@@ -66,7 +66,7 @@ class NewsRemoteDataSource(
                 if (newsResponse != null) {
                     Result.Success(newsResponse)
                 } else {
-                    Result.Error(-2, "ParsingError", "Empty response body")
+                    Result.Error(-2, "parsingError", "Empty response body")
                 }
             } else {
                 response.toError()
