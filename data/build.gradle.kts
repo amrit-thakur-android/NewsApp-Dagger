@@ -53,7 +53,7 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
-    kapt(libs.moshi.codegen)
+    //kapt(libs.moshi.codegen)
 
     // Testing
     testImplementation(libs.junit)
