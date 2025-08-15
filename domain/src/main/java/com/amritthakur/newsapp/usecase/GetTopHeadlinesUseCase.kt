@@ -1,6 +1,6 @@
 package com.amritthakur.newsapp.usecase
 
-import com.amritthakur.newsapp.common.DomainResult
+import com.amritthakur.newsapp.common.Outcome
 import com.amritthakur.newsapp.common.Result
 import com.amritthakur.newsapp.common.toDomainError
 import com.amritthakur.newsapp.entity.Article
@@ -11,10 +11,10 @@ class GetTopHeadlinesUseCase(
     private val newsRepository: NewsRepository
 ) {
 
-    suspend operator fun invoke(params: TopHeadlinesParams = TopHeadlinesParams()): DomainResult<List<Article>> {
+    suspend operator fun invoke(params: TopHeadlinesParams = TopHeadlinesParams()): Outcome<List<Article>> {
         return when (val result = newsRepository.getTopHeadlines(params)) {
-            is Result.Success -> DomainResult.Success(result.data)
-            is Result.Error -> DomainResult.Error(result.toDomainError())
+            is Result.Success -> Outcome.Success(result.data)
+            is Result.Error -> Outcome.Error(result.toDomainError())
         }
     }
 }
