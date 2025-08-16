@@ -51,14 +51,14 @@ fun Result.Error.toDomainError(): DomainError {
                 "SocketTimeoutException",
                 "ConnectException",
                 "UnknownHostException",
-                "SocketException" -> DomainError.NetworkError
+                "SocketException" -> DomainError.NetworkError("Network error occurred")
 
                 else -> DomainError.UnexpectedError(errorMessage ?: "Unknown exception occurred")
             }
         }
 
         -2 -> {
-            DomainError.ParsingError
+            DomainError.ParsingError("Parsing error occurred")
         }
 
         else -> DomainError.UnexpectedError(errorMessage ?: "Unexpected error occurred")
