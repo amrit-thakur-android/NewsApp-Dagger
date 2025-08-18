@@ -1,5 +1,8 @@
 package com.amritthakur.newsapp.viewmodel
 
+import com.amritthakur.newsapp.navigation.NavigationChannel
+import com.amritthakur.newsapp.navigation.NavigationEvent
+
 interface HomeInput {
     val onTopHeadLines: () -> Unit
     val onNewsSources: () -> Unit
@@ -10,25 +13,35 @@ interface HomeInput {
 
 interface HomeOutput
 
-class HomeViewModel : HomeInput, HomeOutput {
+class HomeViewModel(
+    navigationChannel: NavigationChannel
+) : HomeInput, HomeOutput {
 
     override val onTopHeadLines: () -> Unit = {
-
+        navigationChannel.postEvent(HomeNavigationEvent.NavigateToTopHeadlines)
     }
 
     override val onNewsSources: () -> Unit = {
-
+        navigationChannel.postEvent(HomeNavigationEvent.NavigateToNewsSources)
     }
 
     override val onCountries: () -> Unit = {
-
+        navigationChannel.postEvent(HomeNavigationEvent.NavigateToCountries)
     }
 
     override val onLanguages: () -> Unit = {
-
+        navigationChannel.postEvent(HomeNavigationEvent.NavigateToLanguages)
     }
 
     override val onSearch: () -> Unit = {
-
+        navigationChannel.postEvent(HomeNavigationEvent.NavigateToSearch)
     }
+}
+
+sealed class HomeNavigationEvent : NavigationEvent {
+    object NavigateToTopHeadlines : HomeNavigationEvent()
+    object NavigateToNewsSources : HomeNavigationEvent()
+    object NavigateToCountries : HomeNavigationEvent()
+    object NavigateToLanguages : HomeNavigationEvent()
+    object NavigateToSearch : HomeNavigationEvent()
 }
