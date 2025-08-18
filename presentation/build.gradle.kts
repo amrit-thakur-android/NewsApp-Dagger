@@ -66,6 +66,9 @@ dependencies {
     // Image Loading
     implementation(libs.coil.compose)
 
+    // Navigation
+    implementation(libs.navigation.compose)
+
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

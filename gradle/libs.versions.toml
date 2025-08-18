@@ -24,6 +24,9 @@ coroutines = "1.10.2"
 # Image Loading
 coil = "3.0.4"
 
+# Navigation
+navigationCompose = "2.8.5"
+
 # Testing
 mockk = "1.14.5"
 coroutinesTest = "1.10.2"
@@ -64,6 +67,9 @@ coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutin
 
 # Image Loading
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+
+# Navigation
+navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
 # Testing
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
