@@ -9,7 +9,7 @@ object NavigationChannel {
 
     val navigationEvent: StateFlow<NavigationEvent?> = _navigationEvent
 
-    fun postEvent(event: NavigationEvent) {
-        _navigationEvent.value = event
+    fun postEvent(navigationEvent: NavigationEvent) {
+        _navigationEvent.value = navigationEvent
     }
 }
