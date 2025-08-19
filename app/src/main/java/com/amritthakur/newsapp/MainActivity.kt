@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import com.amritthakur.newsapp.navigation.AppNavigation
 import com.amritthakur.newsapp.ui.theme.NewsAppDaggerTheme
 
 class MainActivity : ComponentActivity() {
