@@ -5,19 +5,30 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.amritthakur.newsapp.NewsApplication
+import com.amritthakur.newsapp.screen.HomeScreen
+import com.amritthakur.newsapp.screen.NewsScreen
 
 @Composable
 fun AppNavigation(
     modifier: Modifier
 ) {
+    val context = LocalContext.current
+    val applicationComponent = remember {
+        (context.applicationContext as NewsApplication).applicationComponent
+    }
+
     val navController = rememberNavController()
     val navigationCoordinator = remember { NavigationCoordinator(navController) }
 
-    val navigationEvent by NavigationChannel.navigationEvent
+    val navigationChannel = remember { applicationComponent.navigationChannel() }
+
+    val navigationEvent by navigationChannel.navigationEvent
         .collectAsStateWithLifecycle()
 
     LaunchedEffect(navigationEvent) {
@@ -32,11 +43,19 @@ fun AppNavigation(
         modifier = modifier
     ) {
         composable(Screen.Home.route) {
-
+            val homeViewModel = remember { applicationComponent.homeViewModel() }
+            HomeScreen(
+                input = homeViewModel,
+                output = homeViewModel
+            )
         }
 
         composable(Screen.News.route) {
-
+            val newsViewModel = remember { applicationComponent.newsViewModel() }
+            NewsScreen(
+                input = newsViewModel,
+                output = newsViewModel
+            )
         }
 
         composable(Screen.Sources.route) {
