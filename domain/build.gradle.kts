@@ -17,7 +17,9 @@ kotlin {
 dependencies {
     // Coroutines for async operations
     implementation(libs.coroutines.core)
-    
+
+    implementation(libs.dagger)
+
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

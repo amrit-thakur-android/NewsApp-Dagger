@@ -5,8 +5,11 @@ import com.amritthakur.newsapp.common.Result
 import com.amritthakur.newsapp.common.toDomainError
 import com.amritthakur.newsapp.entity.Source
 import com.amritthakur.newsapp.repository.NewsRepository
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class GetSourcesUseCase(
+@Singleton
+class GetSourcesUseCase @Inject constructor(
     private val newsRepository: NewsRepository
 ) {
 

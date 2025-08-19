@@ -6,8 +6,11 @@ import com.amritthakur.newsapp.common.toDomainError
 import com.amritthakur.newsapp.entity.Article
 import com.amritthakur.newsapp.entity.TopHeadlinesParams
 import com.amritthakur.newsapp.repository.NewsRepository
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class GetTopHeadlinesUseCase(
+@Singleton
+class GetTopHeadlinesUseCase @Inject constructor(
     private val newsRepository: NewsRepository
 ) {
 
