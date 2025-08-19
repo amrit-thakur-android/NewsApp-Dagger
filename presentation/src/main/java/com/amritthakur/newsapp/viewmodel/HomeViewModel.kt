@@ -14,28 +14,26 @@ interface HomeInput {
 
 interface HomeOutput
 
-class HomeViewModel @Inject constructor(
-    navigationChannel: NavigationChannel
-) : HomeInput, HomeOutput {
+class HomeViewModel @Inject constructor() : HomeInput, HomeOutput {
 
     override val onTopHeadLines: () -> Unit = {
-        navigationChannel.postEvent(HomeNavigationEvent.NavigateToTopHeadlines)
+        NavigationChannel.postEvent(HomeNavigationEvent.NavigateToTopHeadlines)
     }
 
     override val onNewsSources: () -> Unit = {
-        navigationChannel.postEvent(HomeNavigationEvent.NavigateToNewsSources)
+        NavigationChannel.postEvent(HomeNavigationEvent.NavigateToNewsSources)
     }
 
     override val onCountries: () -> Unit = {
-        navigationChannel.postEvent(HomeNavigationEvent.NavigateToCountries)
+        NavigationChannel.postEvent(HomeNavigationEvent.NavigateToCountries)
     }
 
     override val onLanguages: () -> Unit = {
-        navigationChannel.postEvent(HomeNavigationEvent.NavigateToLanguages)
+        NavigationChannel.postEvent(HomeNavigationEvent.NavigateToLanguages)
     }
 
     override val onSearch: () -> Unit = {
-        navigationChannel.postEvent(HomeNavigationEvent.NavigateToSearch)
+        NavigationChannel.postEvent(HomeNavigationEvent.NavigateToSearch)
     }
 }
 
