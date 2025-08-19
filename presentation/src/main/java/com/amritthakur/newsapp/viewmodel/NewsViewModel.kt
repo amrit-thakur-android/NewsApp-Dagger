@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amritthakur.newsapp.common.DispatcherProvider
 import com.amritthakur.newsapp.common.Outcome
+import com.amritthakur.newsapp.entity.TopHeadlinesParams
 import com.amritthakur.newsapp.state.NewsUiState
 import com.amritthakur.newsapp.state.UiState
 import com.amritthakur.newsapp.usecase.GetTopHeadlinesUseCase
@@ -37,7 +38,11 @@ class NewsViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(
                 articles = UiState.Loading
             )
-            when (val outcome = getTopHeadlinesUseCase()) {
+            when (val outcome = getTopHeadlinesUseCase(
+                params = TopHeadlinesParams(
+                    country = "us"
+                )
+            )) {
                 is Outcome.Success -> {
                     _uiState.value = _uiState.value.copy(
                         articles = UiState.Success(outcome.data)
