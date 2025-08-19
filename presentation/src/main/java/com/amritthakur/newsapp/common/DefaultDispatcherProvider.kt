@@ -2,8 +2,11 @@ package com.amritthakur.newsapp.common
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class DefaultDispatcherProvider : DispatcherProvider {
+@Singleton
+class DefaultDispatcherProvider @Inject constructor() : DispatcherProvider {
 
     override val main: CoroutineDispatcher = Dispatchers.Main
 
