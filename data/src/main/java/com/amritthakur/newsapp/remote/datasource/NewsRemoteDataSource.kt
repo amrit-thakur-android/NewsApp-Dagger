@@ -6,8 +6,11 @@ import com.amritthakur.newsapp.remote.api.NewsApiService
 import com.amritthakur.newsapp.remote.response.NewsResponse
 import com.amritthakur.newsapp.remote.response.SourcesResponse
 import com.amritthakur.newsapp.remote.util.toError
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class NewsRemoteDataSource(
+@Singleton
+class NewsRemoteDataSource @Inject constructor(
     private val newsApiService: NewsApiService
 ) {
 
@@ -59,7 +62,7 @@ class NewsRemoteDataSource(
         query: String
     ): Result<NewsResponse> {
         return try {
-            val response = newsApiService.searchNews(query)
+            val response = newsApiService.searchNews(query = query)
 
             if (response.isSuccessful) {
                 val newsResponse = response.body()

@@ -55,6 +55,8 @@ dependencies {
     implementation(libs.moshi.kotlin)
     //kapt(libs.moshi.codegen)
 
+    implementation(libs.dagger)
+
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
