@@ -55,6 +55,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // Navigation
+    implementation(libs.navigation.compose)
+
     // Dagger 2
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
