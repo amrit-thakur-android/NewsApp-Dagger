@@ -10,6 +10,7 @@ import com.amritthakur.newsapp.usecase.GetTopHeadlinesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 interface NewsInput {
     val onNews: () -> Unit
@@ -19,7 +20,7 @@ interface NewsOutput {
     val uiState: StateFlow<NewsUiState>
 }
 
-class NewsViewModel(
+class NewsViewModel @Inject constructor(
     private val getTopHeadlinesUseCase: GetTopHeadlinesUseCase,
     private val dispatcherProvider: DispatcherProvider
 ) : ViewModel(), NewsInput, NewsOutput {

@@ -2,6 +2,7 @@ package com.amritthakur.newsapp.viewmodel
 
 import com.amritthakur.newsapp.navigation.NavigationChannel
 import com.amritthakur.newsapp.navigation.NavigationEvent
+import javax.inject.Inject
 
 interface HomeInput {
     val onTopHeadLines: () -> Unit
@@ -13,7 +14,7 @@ interface HomeInput {
 
 interface HomeOutput
 
-class HomeViewModel(
+class HomeViewModel @Inject constructor(
     navigationChannel: NavigationChannel
 ) : HomeInput, HomeOutput {
 

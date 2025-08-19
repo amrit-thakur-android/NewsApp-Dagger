@@ -69,6 +69,8 @@ dependencies {
     // Navigation
     implementation(libs.navigation.compose)
 
+    implementation(libs.dagger)
+
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
