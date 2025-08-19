@@ -40,21 +40,23 @@ fun NewsContent(
     uiState: NewsUiState,
     onNews: () -> Unit
 ) {
-    val articles = (uiState.articles as UiState.Success).data
+    if (uiState.articles is UiState.Success) {
+        val articles = (uiState.articles as UiState.Success).data
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(
-            items = articles,
-            key = { article -> article.url }
-        ) { article ->
-            NewsItem(
-                article = article,
-                onNews = onNews
-            )
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(
+                items = articles,
+                key = { article -> article.url }
+            ) { article ->
+                NewsItem(
+                    article = article,
+                    onNews = onNews
+                )
+            }
         }
     }
 }
