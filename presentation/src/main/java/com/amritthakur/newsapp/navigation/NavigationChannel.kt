@@ -2,8 +2,11 @@ package com.amritthakur.newsapp.navigation
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object NavigationChannel {
+@Singleton
+class NavigationChannel @Inject constructor() {
 
     private val _navigationEvent = MutableStateFlow<NavigationEvent?>(null)
 
