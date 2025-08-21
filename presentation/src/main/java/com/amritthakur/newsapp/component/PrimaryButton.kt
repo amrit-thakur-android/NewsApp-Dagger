@@ -28,7 +28,7 @@ fun PrimaryButton(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PrimaryButtonPreview() {
     PrimaryButton(
