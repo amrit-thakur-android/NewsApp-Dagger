@@ -4,18 +4,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.amritthakur.newsapp.R
+import com.amritthakur.newsapp.component.PrimaryButton
 import com.amritthakur.newsapp.viewmodel.HomeInput
 import com.amritthakur.newsapp.viewmodel.HomeOutput
 
@@ -59,59 +56,40 @@ fun HomeContent(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        HomeButton(
-            title = "Top Headlines",
+        PrimaryButton(
+            title = stringResource(R.string.top_headlines),
             onClick = actions.onTopHeadLines
         )
 
         Spacer(modifier = Modifier.weight(0.25f))
 
-        HomeButton(
-            title = "News Sources",
+        PrimaryButton(
+            title = stringResource(R.string.news_sources),
             onClick = actions.onNewsSources
         )
 
         Spacer(modifier = Modifier.weight(0.25f))
 
-        HomeButton(
-            title = "Countries",
+        PrimaryButton(
+            title = stringResource(R.string.countries),
             onClick = actions.onCountries
         )
 
         Spacer(modifier = Modifier.weight(0.25f))
 
-        HomeButton(
-            title = "Languages",
+        PrimaryButton(
+            title = stringResource(R.string.languages),
             onClick = actions.onLanguages
         )
 
         Spacer(modifier = Modifier.weight(0.25f))
 
-        HomeButton(
-            title = "Search",
+        PrimaryButton(
+            title = stringResource(R.string.search),
             onClick = actions.onSearch
         )
 
         Spacer(modifier = Modifier.weight(1f))
-    }
-}
-
-@Composable
-fun HomeButton(
-    title: String,
-    onClick: () -> Unit
-) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp)
-    ) {
-        Text(
-            text = title,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
     }
 }
 
