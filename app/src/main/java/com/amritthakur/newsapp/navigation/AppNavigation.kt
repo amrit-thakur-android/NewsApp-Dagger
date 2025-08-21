@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.amritthakur.newsapp.NewsApplication
 import com.amritthakur.newsapp.screen.HomeScreen
 import com.amritthakur.newsapp.screen.NewsScreen
+import com.amritthakur.newsapp.screen.NewsSourcesScreen
 
 @Composable
 fun AppNavigation(
@@ -59,7 +60,11 @@ fun AppNavigation(
         }
 
         composable(Screen.Sources.route) {
-
+            val newsSourcesViewModel = remember { applicationComponent.newsSourcesViewModel() }
+            NewsSourcesScreen(
+                input = newsSourcesViewModel,
+                output = newsSourcesViewModel
+            )
         }
 
         composable(Screen.Countries.route) {
