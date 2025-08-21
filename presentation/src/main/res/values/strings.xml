@@ -15,4 +15,7 @@
     <string name="error">Error</string>
     <string name="error_title">Oops! Something went wrong</string>
     <string name="try_again">Try Again</string>
+
+    // Loading view
+    <string name="loading">Loading…</string>
 </resources>
