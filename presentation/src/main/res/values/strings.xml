@@ -10,4 +10,9 @@
     // News item
     <string name="article_image">Article image</string>
     <string name="source_format">Source - %s</string>
+
+    // Error view
+    <string name="error">Error</string>
+    <string name="error_title">Oops! Something went wrong</string>
+    <string name="try_again">Try Again</string>
 </resources>
