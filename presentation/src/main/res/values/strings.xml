@@ -6,4 +6,8 @@
     <string name="countries">Countries</string>
     <string name="languages">Languages</string>
     <string name="search">Search</string>
+
+    // News item
+    <string name="article_image">Article image</string>
+    <string name="source_format">Source - %s</string>
 </resources>
