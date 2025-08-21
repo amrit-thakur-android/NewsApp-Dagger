@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.amritthakur.newsapp.NewsApplication
+import com.amritthakur.newsapp.screen.CountriesScreen
 import com.amritthakur.newsapp.screen.HomeScreen
 import com.amritthakur.newsapp.screen.NewsScreen
 import com.amritthakur.newsapp.screen.NewsSourcesScreen
@@ -68,7 +69,11 @@ fun AppNavigation(
         }
 
         composable(Screen.Countries.route) {
-
+            val countriesViewModel = remember { applicationComponent.countriesViewModel() }
+            CountriesScreen(
+                input = countriesViewModel,
+                output = countriesViewModel
+            )
         }
 
         composable(Screen.Languages.route) {
