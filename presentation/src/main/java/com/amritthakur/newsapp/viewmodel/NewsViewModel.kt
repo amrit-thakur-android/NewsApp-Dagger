@@ -30,7 +30,14 @@ class NewsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(NewsUiState())
     override val uiState: StateFlow<NewsUiState> = _uiState
 
-    init {
+    private var currentParams = TopHeadlinesParams()
+
+    fun updateParams(source: String?, country: String?, language: String?) {
+        currentParams = TopHeadlinesParams(
+            source = source,
+            country = country,
+            language = language
+        )
         getNews()
     }
 
@@ -40,9 +47,7 @@ class NewsViewModel @Inject constructor(
                 articles = UiState.Loading
             )
             when (val outcome = getTopHeadlinesUseCase(
-                params = TopHeadlinesParams(
-                    country = "us"
-                )
+                params = currentParams
             )) {
                 is Outcome.Success -> {
                     _uiState.value = _uiState.value.copy(

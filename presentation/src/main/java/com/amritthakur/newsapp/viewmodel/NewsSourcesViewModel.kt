@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amritthakur.newsapp.common.DispatcherProvider
 import com.amritthakur.newsapp.common.Outcome
+import com.amritthakur.newsapp.navigation.NavigationChannel
+import com.amritthakur.newsapp.navigation.NavigationEvent
 import com.amritthakur.newsapp.state.NewsSourcesUiState
 import com.amritthakur.newsapp.state.UiState
 import com.amritthakur.newsapp.usecase.GetSourcesUseCase
@@ -23,7 +25,8 @@ interface NewsSourcesOutput {
 
 class NewsSourcesViewModel @Inject constructor(
     private val getSourcesUseCase: GetSourcesUseCase,
-    private val dispatcherProvider: DispatcherProvider
+    private val dispatcherProvider: DispatcherProvider,
+    private val navigationChannel: NavigationChannel
 ) : ViewModel(), NewsSourcesInput, NewsSourcesOutput {
 
     private val _uiState = MutableStateFlow(NewsSourcesUiState())
@@ -54,11 +57,15 @@ class NewsSourcesViewModel @Inject constructor(
         }
     }
 
-    override val onSource: (String) -> Unit = {
-
+    override val onSource: (String) -> Unit = { sourceId ->
+        navigationChannel.postEvent(NewsSourcesNavigationEvent.NavigateToNews(sourceId))
     }
 
     override val onTryAgain: () -> Unit = {
         getSources()
     }
+}
+
+sealed class NewsSourcesNavigationEvent : NavigationEvent {
+    data class NavigateToNews(val sourceId: String) : NewsSourcesNavigationEvent()
 }
