@@ -15,4 +15,8 @@ class NavigationChannel @Inject constructor() {
     fun postEvent(navigationEvent: NavigationEvent) {
         _navigationEvent.value = navigationEvent
     }
+
+    fun clearEvent() {
+        _navigationEvent.value = null
+    }
 }

@@ -39,6 +39,7 @@ fun AppNavigation(
     LaunchedEffect(navigationEvent) {
         navigationEvent?.let { event ->
             navigationCoordinator.handleNavigationEvent(event)
+            navigationChannel.clearEvent()
         }
     }
 
