@@ -15,6 +15,7 @@ import javax.inject.Inject
 
 interface NewsInput {
     val onNews: () -> Unit
+    val onTryAgain: () -> Unit
 }
 
 interface NewsOutput {
@@ -60,5 +61,9 @@ class NewsViewModel @Inject constructor(
 
     override val onNews: () -> Unit = {
 
+    }
+
+    override val onTryAgain: () -> Unit = {
+        getNews()
     }
 }
