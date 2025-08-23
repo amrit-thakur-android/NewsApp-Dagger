@@ -70,6 +70,9 @@ dependencies {
     // Navigation
     implementation(libs.navigation.compose)
 
+    // Browser
+    implementation(libs.browser)
+
     implementation(libs.dagger)
 
     // Testing
