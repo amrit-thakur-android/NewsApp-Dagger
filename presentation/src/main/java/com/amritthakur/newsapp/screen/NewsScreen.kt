@@ -23,6 +23,7 @@ import com.amritthakur.newsapp.state.UiState
 import com.amritthakur.newsapp.viewmodel.NewsInput
 import com.amritthakur.newsapp.viewmodel.NewsOutput
 import com.amritthakur.newsapp.R
+import com.amritthakur.newsapp.component.EmptyView
 
 @Composable
 fun NewsScreen(
@@ -59,19 +60,25 @@ fun NewsContent(
         is UiState.Success -> {
             val articles = uiState.articles.data
 
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(
-                    items = articles,
-                    key = { article -> article.url }
-                ) { article ->
-                    NewsItem(
-                        article = article,
-                        onNews = { onNews(article.url) }
-                    )
+            if (articles.isEmpty()) {
+                EmptyView(
+                    message = stringResource(R.string.no_news_found)
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(
+                        items = articles,
+                        key = { article -> article.url }
+                    ) { article ->
+                        NewsItem(
+                            article = article,
+                            onNews = { onNews(article.url) }
+                        )
+                    }
                 }
             }
         }

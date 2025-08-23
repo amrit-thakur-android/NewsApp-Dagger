@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amritthakur.newsapp.R
+import com.amritthakur.newsapp.component.EmptyView
 import com.amritthakur.newsapp.component.ErrorView
 import com.amritthakur.newsapp.component.LoadingView
 import com.amritthakur.newsapp.component.NewsItem
@@ -88,19 +89,30 @@ fun SearchContent(
             is UiState.Success -> {
                 val articles = uiState.articles.data
 
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(
-                        items = articles,
-                        key = { article -> article.url }
-                    ) { article ->
-                        NewsItem(
-                            article = article,
-                            onNews = { onNews(article.url) }
-                        )
+                if (articles.isEmpty() && uiState.query.isBlank()) {
+                    EmptyView(
+                        message = stringResource(R.string.enter_query)
+                    )
+                } else if (articles.isEmpty() && uiState.query.isNotBlank()) {
+                    EmptyView(
+                        message = stringResource(R.string.no_news_found),
+                        messageInfo = stringResource(R.string.no_news_found_info_search)
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(
+                            items = articles,
+                            key = { article -> article.url }
+                        ) { article ->
+                            NewsItem(
+                                article = article,
+                                onNews = { onNews(article.url) }
+                            )
+                        }
                     }
                 }
             }

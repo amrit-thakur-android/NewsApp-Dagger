@@ -7,8 +7,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.amritthakur.newsapp.R
+import com.amritthakur.newsapp.component.EmptyView
 import com.amritthakur.newsapp.component.ErrorView
 import com.amritthakur.newsapp.component.LoadingView
 import com.amritthakur.newsapp.component.PrimaryButton
@@ -44,19 +47,25 @@ fun NewsSourcesContent(
         is UiState.Success -> {
             val sources = uiState.sources.data
 
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(32.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp)
-            ) {
-                items(
-                    items = sources,
-                    key = { source -> source.id }
-                ) { source ->
-                    PrimaryButton(
-                        title = source.name,
-                        onClick = { onSource(source.id) }
-                    )
+            if (sources.isEmpty()) {
+                EmptyView(
+                    message = stringResource(R.string.no_sources_found)
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(32.dp),
+                    verticalArrangement = Arrangement.spacedBy(24.dp)
+                ) {
+                    items(
+                        items = sources,
+                        key = { source -> source.id }
+                    ) { source ->
+                        PrimaryButton(
+                            title = source.name,
+                            onClick = { onSource(source.id) }
+                        )
+                    }
                 }
             }
         }
