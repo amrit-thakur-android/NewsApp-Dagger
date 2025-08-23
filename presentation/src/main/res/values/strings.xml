@@ -21,4 +21,7 @@
 
     // Custom tab
     <string name="custom_tab_failed">Failed to open news article</string>
+
+    // Search news
+    <string name="search_hint">Search for news…</string>
 </resources>

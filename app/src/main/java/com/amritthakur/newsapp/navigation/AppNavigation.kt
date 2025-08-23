@@ -18,6 +18,7 @@ import com.amritthakur.newsapp.screen.HomeScreen
 import com.amritthakur.newsapp.screen.LanguagesScreen
 import com.amritthakur.newsapp.screen.NewsScreen
 import com.amritthakur.newsapp.screen.NewsSourcesScreen
+import com.amritthakur.newsapp.screen.SearchScreen
 
 @Composable
 fun AppNavigation(
@@ -116,7 +117,11 @@ fun AppNavigation(
         }
 
         composable(Screen.Search.route) {
-
+            val searchViewModel = remember { applicationComponent.searchViewModel() }
+            SearchScreen(
+                input = searchViewModel,
+                output = searchViewModel
+            )
         }
     }
 }

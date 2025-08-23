@@ -8,6 +8,7 @@ import com.amritthakur.newsapp.viewmodel.HomeViewModel
 import com.amritthakur.newsapp.viewmodel.LanguagesViewModel
 import com.amritthakur.newsapp.viewmodel.NewsSourcesViewModel
 import com.amritthakur.newsapp.viewmodel.NewsViewModel
+import com.amritthakur.newsapp.viewmodel.SearchViewModel
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -31,6 +32,7 @@ interface ApplicationComponent {
     fun newsSourcesViewModel(): NewsSourcesViewModel
     fun countriesViewModel(): CountriesViewModel
     fun languagesViewModel(): LanguagesViewModel
+    fun searchViewModel(): SearchViewModel
     fun navigationChannel(): NavigationChannel
 
     @Component.Builder
