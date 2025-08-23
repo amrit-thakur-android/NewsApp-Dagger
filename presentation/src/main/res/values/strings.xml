@@ -18,4 +18,7 @@
 
     // Loading view
     <string name="loading">Loading…</string>
+
+    // Custom tab
+    <string name="custom_tab_failed">Failed to open news article</string>
 </resources>

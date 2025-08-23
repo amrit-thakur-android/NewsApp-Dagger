@@ -14,7 +14,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 interface NewsInput {
-    val onNews: () -> Unit
     val onTryAgain: () -> Unit
 }
 
@@ -62,10 +61,6 @@ class NewsViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    override val onNews: () -> Unit = {
-
     }
 
     override val onTryAgain: () -> Unit = {
