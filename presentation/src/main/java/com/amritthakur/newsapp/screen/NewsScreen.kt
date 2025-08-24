@@ -7,23 +7,25 @@ import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
+import androidx.paging.compose.itemContentType
 import com.amritthakur.newsapp.component.ErrorView
 import com.amritthakur.newsapp.component.LoadingView
 import com.amritthakur.newsapp.component.NewsItem
-import com.amritthakur.newsapp.state.NewsUiState
-import com.amritthakur.newsapp.state.UiState
+import com.amritthakur.newsapp.component.EmptyView
+import com.amritthakur.newsapp.entity.Article
 import com.amritthakur.newsapp.viewmodel.NewsInput
 import com.amritthakur.newsapp.viewmodel.NewsOutput
 import com.amritthakur.newsapp.R
-import com.amritthakur.newsapp.component.EmptyView
 
 @Composable
 fun NewsScreen(
@@ -32,62 +34,87 @@ fun NewsScreen(
 ) {
     val context = LocalContext.current
     val errorMessage = stringResource(R.string.custom_tab_failed)
+    val lazyPagingItems = output.uiState.collectAsLazyPagingItems()
 
     NewsContent(
-        uiState = output.uiState.collectAsStateWithLifecycle().value,
+        lazyPagingItems = lazyPagingItems,
         onNews = { url ->
             launchCustomTab(
                 context,
                 url,
                 errorMessage
             )
-        },
-        onTryAgain = input.onTryAgain
+        }
     )
 }
 
 @Composable
 fun NewsContent(
-    uiState: NewsUiState,
-    onNews: (String) -> Unit,
-    onTryAgain: () -> Unit
+    lazyPagingItems: LazyPagingItems<Article>,
+    onNews: (String) -> Unit
 ) {
-    when (uiState.articles) {
-        is UiState.Loading -> {
-            LoadingView()
-        }
+    val loadState = lazyPagingItems.loadState
 
-        is UiState.Success -> {
-            val articles = uiState.articles.data
+    // Handle initial loading state
+    if (loadState.refresh is LoadState.Loading && lazyPagingItems.itemCount == 0) {
+        LoadingView()
+        return
+    }
 
-            if (articles.isEmpty()) {
-                EmptyView(
-                    message = stringResource(R.string.no_news_found)
+    // Handle initial error state
+    if (loadState.refresh is LoadState.Error && lazyPagingItems.itemCount == 0) {
+        ErrorView(
+            message = (loadState.refresh as LoadState.Error).error.message
+                ?: stringResource(R.string.error_title),
+            onTryAgain = { lazyPagingItems.retry() }
+        )
+        return
+    }
+
+    // Handle empty state
+    if (loadState.refresh is LoadState.NotLoading && lazyPagingItems.itemCount == 0) {
+        EmptyView(
+            message = stringResource(R.string.no_news_found)
+        )
+        return
+    }
+
+    // Show articles list
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(
+            count = lazyPagingItems.itemCount,
+            key = lazyPagingItems.itemKey { article -> article.url },
+            contentType = lazyPagingItems.itemContentType { "Article" }
+        ) { index ->
+            val article = lazyPagingItems[index]
+            if (article != null) {
+                NewsItem(
+                    article = article,
+                    onNews = { onNews(article.url) }
                 )
-            } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(
-                        items = articles,
-                        key = { article -> article.url }
-                    ) { article ->
-                        NewsItem(
-                            article = article,
-                            onNews = { onNews(article.url) }
-                        )
-                    }
-                }
             }
         }
 
-        is UiState.Error -> {
-            ErrorView(
-                message = uiState.articles.message,
-                onTryAgain = onTryAgain
-            )
+        // Handle append loading state
+        if (loadState.append is LoadState.Loading) {
+            item {
+                LoadingView()
+            }
+        }
+
+        // Handle append error state
+        if (loadState.append is LoadState.Error) {
+            item {
+                ErrorView(
+                    message = (loadState.append as LoadState.Error).error.message
+                        ?: stringResource(R.string.error_title),
+                    onTryAgain = { lazyPagingItems.retry() }
+                )
+            }
         }
     }
 }

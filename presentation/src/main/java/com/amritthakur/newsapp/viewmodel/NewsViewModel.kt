@@ -2,32 +2,29 @@ package com.amritthakur.newsapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.amritthakur.newsapp.common.DispatcherProvider
-import com.amritthakur.newsapp.common.Outcome
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.amritthakur.newsapp.entity.Article
 import com.amritthakur.newsapp.entity.TopHeadlinesParams
-import com.amritthakur.newsapp.state.NewsUiState
-import com.amritthakur.newsapp.state.UiState
 import com.amritthakur.newsapp.usecase.GetTopHeadlinesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
-interface NewsInput {
-    val onTryAgain: () -> Unit
-}
+interface NewsInput
 
 interface NewsOutput {
-    val uiState: StateFlow<NewsUiState>
+    val uiState: StateFlow<PagingData<Article>>
 }
 
 class NewsViewModel @Inject constructor(
-    private val getTopHeadlinesUseCase: GetTopHeadlinesUseCase,
-    private val dispatcherProvider: DispatcherProvider
+    private val getTopHeadlinesUseCase: GetTopHeadlinesUseCase
 ) : ViewModel(), NewsInput, NewsOutput {
 
-    private val _uiState = MutableStateFlow(NewsUiState())
-    override val uiState: StateFlow<NewsUiState> = _uiState
+    private val _uiState = MutableStateFlow<PagingData<Article>>(PagingData.empty())
+    override val uiState: StateFlow<PagingData<Article>> = _uiState
 
     private var currentParams = TopHeadlinesParams()
 
@@ -41,29 +38,10 @@ class NewsViewModel @Inject constructor(
     }
 
     private fun getNews() {
-        viewModelScope.launch(dispatcherProvider.io) {
-            _uiState.value = _uiState.value.copy(
-                articles = UiState.Loading
-            )
-            when (val outcome = getTopHeadlinesUseCase(
-                params = currentParams
-            )) {
-                is Outcome.Success -> {
-                    _uiState.value = _uiState.value.copy(
-                        articles = UiState.Success(outcome.data)
-                    )
-                }
-
-                is Outcome.Error -> {
-                    _uiState.value = _uiState.value.copy(
-                        articles = UiState.Error(outcome.error.message)
-                    )
-                }
-            }
-        }
-    }
-
-    override val onTryAgain: () -> Unit = {
-        getNews()
+        getTopHeadlinesUseCase(currentParams)
+            .cachedIn(viewModelScope)
+            .onEach {
+                _uiState.value = it
+            }.launchIn(viewModelScope)
     }
 }
