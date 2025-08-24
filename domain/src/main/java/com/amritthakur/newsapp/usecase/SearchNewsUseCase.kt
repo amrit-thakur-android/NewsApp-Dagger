@@ -1,10 +1,9 @@
 package com.amritthakur.newsapp.usecase
 
-import com.amritthakur.newsapp.common.Outcome
-import com.amritthakur.newsapp.common.Result
-import com.amritthakur.newsapp.common.toDomainError
+import androidx.paging.PagingData
 import com.amritthakur.newsapp.entity.Article
 import com.amritthakur.newsapp.repository.NewsRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -13,10 +12,7 @@ class SearchNewsUseCase @Inject constructor(
     private val newsRepository: NewsRepository
 ) {
 
-    suspend operator fun invoke(query: String): Outcome<List<Article>> {
-        return when (val result = newsRepository.searchNews(query)) {
-            is Result.Success -> Outcome.Success(result.data)
-            is Result.Error -> Outcome.Error(result.toDomainError())
-        }
+    operator fun invoke(query: String): Flow<PagingData<Article>> {
+        return newsRepository.searchNews(query)
     }
 }
