@@ -15,13 +15,17 @@ class NewsRemoteDataSource @Inject constructor(
 ) {
 
     suspend fun getTopHeadlines(
-        params: TopHeadlinesParams = TopHeadlinesParams()
+        params: TopHeadlinesParams = TopHeadlinesParams(),
+        pageSize: Int? = null,
+        page: Int? = null
     ): Result<NewsResponse> {
         return try {
             val response = newsApiService.getTopHeadlines(
                 country = params.country,
                 source = params.source,
-                language = params.language
+                language = params.language,
+                pageSize = pageSize,
+                page = page
             )
 
             if (response.isSuccessful) {
@@ -59,10 +63,16 @@ class NewsRemoteDataSource @Inject constructor(
     }
 
     suspend fun searchNews(
-        query: String
+        query: String,
+        pageSize: Int? = null,
+        page: Int? = null
     ): Result<NewsResponse> {
         return try {
-            val response = newsApiService.searchNews(query = query)
+            val response = newsApiService.searchNews(
+                query = query,
+                pageSize = pageSize,
+                page = page
+            )
 
             if (response.isSuccessful) {
                 val newsResponse = response.body()
