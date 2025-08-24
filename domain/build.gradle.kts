@@ -20,6 +20,9 @@ dependencies {
 
     implementation(libs.dagger)
 
+    // Paging
+    implementation(libs.paging.common)
+
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

@@ -57,6 +57,9 @@ dependencies {
 
     implementation(libs.dagger)
 
+    // Paging
+    implementation(libs.paging.runtime)
+
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
