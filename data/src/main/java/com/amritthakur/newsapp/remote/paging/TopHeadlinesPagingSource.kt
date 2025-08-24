@@ -16,10 +16,11 @@ class TopHeadlinesPagingSource @Inject constructor(
 
     companion object {
         private const val STARTING_PAGE_INDEX = 1
+        private const val PAGE_SIZE = 20
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
-        val pageSize = params.loadSize
+        val pageSize = PAGE_SIZE
         val page = params.key ?: STARTING_PAGE_INDEX
 
         return try {
@@ -31,9 +32,12 @@ class TopHeadlinesPagingSource @Inject constructor(
 
             when (result) {
                 is Result.Success -> {
-                    val articles = result.data.articles.toEntity()
+                    val rawArticles = result.data.articles ?: emptyList()
+                    val articles = rawArticles.toEntity()
                     val totalResults = result.data.totalResults ?: 0
-                    val hasNextPage = (page * pageSize) < totalResults
+
+                    // Handle NewsAPI's unpredictable behavior: stop if no articles returned
+                    val hasNextPage = rawArticles.isNotEmpty() && totalResults > 0
 
                     LoadResult.Page(
                         data = articles,
