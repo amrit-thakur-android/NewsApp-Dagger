@@ -53,10 +53,6 @@ class SearchViewModel @Inject constructor(
         _queryFlow
             .debounce(300)
             .distinctUntilChanged()
-            .onEach { query ->
-                // Clear previous results immediately when query changes
-                _articles.value = PagingData.empty()
-            }
             .flatMapLatest { query ->
                 if (query.isBlank()) {
                     flowOf(PagingData.empty())

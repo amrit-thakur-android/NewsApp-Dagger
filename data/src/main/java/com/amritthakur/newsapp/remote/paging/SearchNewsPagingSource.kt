@@ -33,6 +33,7 @@ class SearchNewsPagingSource @Inject constructor(
                 is Result.Success -> {
                     val rawArticles = result.data.articles ?: emptyList()
                     val articles = rawArticles.toEntity()
+                        .distinctBy { it.url } // Remove duplicates by URL
                     val totalResults = result.data.totalResults ?: 0
 
                     // Handle NewsAPI's unpredictable behavior: stop if no articles returned
