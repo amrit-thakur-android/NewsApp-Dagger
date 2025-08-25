@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -19,13 +18,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
+import androidx.paging.compose.itemContentType
 import com.amritthakur.newsapp.R
 import com.amritthakur.newsapp.component.EmptyView
 import com.amritthakur.newsapp.component.ErrorView
 import com.amritthakur.newsapp.component.LoadingView
 import com.amritthakur.newsapp.component.NewsItem
-import com.amritthakur.newsapp.state.SearchUiState
-import com.amritthakur.newsapp.state.UiState
+import com.amritthakur.newsapp.entity.Article
 import com.amritthakur.newsapp.viewmodel.SearchInput
 import com.amritthakur.newsapp.viewmodel.SearchOutput
 
@@ -36,9 +39,12 @@ fun SearchScreen(
 ) {
     val context = LocalContext.current
     val errorMessage = stringResource(R.string.custom_tab_failed)
+    val query = output.query.collectAsStateWithLifecycle().value
+    val lazyPagingItems = output.articles.collectAsLazyPagingItems()
 
     SearchContent(
-        uiState = output.uiState.collectAsStateWithLifecycle().value,
+        query = query,
+        lazyPagingItems = lazyPagingItems,
         onQueryChange = input.onQueryChange,
         onNews = { url ->
             launchCustomTab(
@@ -46,25 +52,25 @@ fun SearchScreen(
                 url,
                 errorMessage
             )
-        },
-        onTryAgain = input.onTryAgain
+        }
     )
 }
 
 @Composable
 fun SearchContent(
-    uiState: SearchUiState,
+    query: String,
+    lazyPagingItems: LazyPagingItems<Article>,
     onQueryChange: (String) -> Unit,
-    onNews: (String) -> Unit,
-    onTryAgain: () -> Unit
+    onNews: (String) -> Unit
 ) {
+    val loadState = lazyPagingItems.loadState
 
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
 
         OutlinedTextField(
-            value = uiState.query,
+            value = query,
             onValueChange = onQueryChange,
             modifier = Modifier
                 .fillMaxWidth()
@@ -81,47 +87,73 @@ fun SearchContent(
             singleLine = true
         )
 
-        when (uiState.articles) {
-            is UiState.Loading -> {
-                LoadingView()
-            }
+        // Handle initial loading state
+        if (loadState.refresh is LoadState.Loading && query.isNotBlank()) {
+            LoadingView()
+        }
 
-            is UiState.Success -> {
-                val articles = uiState.articles.data
+        // Handle refresh error state
+        else if (loadState.refresh is LoadState.Error) {
+            ErrorView(
+                message = (loadState.refresh as LoadState.Error).error.message
+                    ?: stringResource(R.string.error_title),
+                onTryAgain = { lazyPagingItems.retry() }
+            )
+        }
 
-                if (articles.isEmpty() && uiState.query.isBlank()) {
-                    EmptyView(
-                        message = stringResource(R.string.enter_query)
-                    )
-                } else if (articles.isEmpty() && uiState.query.isNotBlank()) {
-                    EmptyView(
-                        message = stringResource(R.string.no_news_found),
-                        messageInfo = stringResource(R.string.no_news_found_info_search)
-                    )
-                } else {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        items(
-                            items = articles,
-                            key = { article -> article.url }
-                        ) { article ->
-                            NewsItem(
-                                article = article,
-                                onNews = { onNews(article.url) }
-                            )
-                        }
+        // Handle empty query state
+        else if (query.isBlank()) {
+            EmptyView(
+                message = stringResource(R.string.enter_query)
+            )
+        }
+
+        // Handle no results found
+        else if (lazyPagingItems.itemCount == 0 && loadState.refresh is LoadState.NotLoading) {
+            EmptyView(
+                message = stringResource(R.string.no_news_found),
+                messageInfo = stringResource(R.string.no_news_found_info_search)
+            )
+        }
+
+        // Show articles list
+        else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(
+                    count = lazyPagingItems.itemCount,
+                    key = lazyPagingItems.itemKey { article -> article.url },
+                    contentType = lazyPagingItems.itemContentType { "Article" }
+                ) { index ->
+                    val article = lazyPagingItems[index]
+                    if (article != null) {
+                        NewsItem(
+                            article = article,
+                            onNews = { onNews(article.url) }
+                        )
                     }
                 }
-            }
 
-            is UiState.Error -> {
-                ErrorView(
-                    message = uiState.articles.message,
-                    onTryAgain = onTryAgain
-                )
+                // Handle append loading state
+                if (loadState.append is LoadState.Loading) {
+                    item {
+                        LoadingView()
+                    }
+                }
+
+                // Handle append error state
+                if (loadState.append is LoadState.Error) {
+                    item {
+                        ErrorView(
+                            message = (loadState.append as LoadState.Error).error.message
+                                ?: stringResource(R.string.error_title),
+                            onTryAgain = { lazyPagingItems.retry() }
+                        )
+                    }
+                }
             }
         }
     }

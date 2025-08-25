@@ -2,10 +2,9 @@ package com.amritthakur.newsapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.amritthakur.newsapp.common.DispatcherProvider
-import com.amritthakur.newsapp.common.Outcome
-import com.amritthakur.newsapp.state.SearchUiState
-import com.amritthakur.newsapp.state.UiState
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.amritthakur.newsapp.entity.Article
 import com.amritthakur.newsapp.usecase.SearchNewsUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -13,30 +12,30 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 interface SearchInput {
     val onQueryChange: (String) -> Unit
-    val onTryAgain: () -> Unit
 }
 
 interface SearchOutput {
-    val uiState: StateFlow<SearchUiState>
+    val query: StateFlow<String>
+    val articles: StateFlow<PagingData<Article>>
 }
 
 class SearchViewModel @Inject constructor(
-    private val searchNewsUseCase: SearchNewsUseCase,
-    private val dispatcherProvider: DispatcherProvider
+    private val searchNewsUseCase: SearchNewsUseCase
 ) : ViewModel(), SearchInput, SearchOutput {
 
-    private val _uiState = MutableStateFlow(SearchUiState())
-    override val uiState: StateFlow<SearchUiState> = _uiState
+    private val _query = MutableStateFlow("")
+    override val query: StateFlow<String> = _query
+
+    private val _articles = MutableStateFlow<PagingData<Article>>(PagingData.empty())
+    override val articles: StateFlow<PagingData<Article>> = _articles
 
     private val _queryFlow = MutableStateFlow("")
 
@@ -44,18 +43,9 @@ class SearchViewModel @Inject constructor(
         setupSearchFlow()
     }
 
-    override val onQueryChange: (String) -> Unit = { query ->
-        _uiState.value = _uiState.value.copy(
-            query = query
-        )
-        _queryFlow.value = query
-    }
-
-    override val onTryAgain: () -> Unit = {
-        val currentQuery = _uiState.value.query
-        if (currentQuery.isNotBlank()) {
-            _queryFlow.value = currentQuery
-        }
+    override val onQueryChange: (String) -> Unit = {
+        _query.value = it
+        _queryFlow.value = it
     }
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
@@ -63,34 +53,16 @@ class SearchViewModel @Inject constructor(
         _queryFlow
             .debounce(300)
             .distinctUntilChanged()
-            .onEach { query ->
+            .flatMapLatest { query ->
                 if (query.isBlank()) {
-                    _uiState.value = _uiState.value.copy(
-                        articles = UiState.Success(emptyList())
-                    )
+                    flowOf(PagingData.empty())
+                } else {
+                    searchNewsUseCase(query).cachedIn(viewModelScope)
                 }
             }
-            .filter { it.isNotBlank() }
-            .flatMapLatest { query ->
-                searchNews(query)
-            }
-            .flowOn(dispatcherProvider.io)
-            .onEach { articles ->
-                _uiState.value = _uiState.value.copy(articles = articles)
+            .onEach { pagingData ->
+                _articles.value = pagingData
             }
             .launchIn(viewModelScope)
-    }
-
-    private fun searchNews(query: String) = flow {
-        emit(UiState.Loading)
-        when (val outcome = searchNewsUseCase(query)) {
-            is Outcome.Success -> {
-                emit(UiState.Success(outcome.data))
-            }
-
-            is Outcome.Error -> {
-                emit(UiState.Error(outcome.error.message))
-            }
-        }
     }
 }
