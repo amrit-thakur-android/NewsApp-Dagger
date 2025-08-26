@@ -5,44 +5,57 @@ fun Result.Error.toDomainError(): DomainError {
         400 -> {
             when (errorCode) {
                 "parameterInvalid" -> DomainError.ParameterInvalid(
-                    errorMessage ?: "Invalid parameter in request"
+                    errorMessage ?: ErrorMessage.PARAMETER_INVALID
                 )
 
                 "parametersMissing" -> DomainError.ParametersMissing(
-                    errorMessage ?: "Required parameters are missing"
+                    errorMessage ?: ErrorMessage.PARAMETERS_MISSING
                 )
 
-                "sourcesTooMany" -> DomainError.SourcesTooMany(errorMessage ?: "Too many sources")
+                "sourcesTooMany" -> DomainError.SourcesTooMany(
+                    errorMessage ?: ErrorMessage.SOURCES_TOO_MANY
+                )
+
                 "sourceDoesNotExist" -> DomainError.SourceDoesNotExist(
-                    errorMessage ?: "Source does not exist"
+                    errorMessage ?: ErrorMessage.SOURCE_DOES_NOT_EXIST
                 )
 
-                else -> DomainError.UnexpectedError(errorMessage ?: "Unexpected error occurred")
+                else -> DomainError.UnexpectedError(errorMessage ?: ErrorMessage.UNEXPECTED_ERROR)
             }
         }
 
         401 -> {
             when (errorCode) {
-                "apiKeyDisabled" -> DomainError.ApiKeyDisabled(errorMessage ?: "API key disabled")
-                "apiKeyExhausted" -> DomainError.ApiKeyExhausted(
-                    errorMessage ?: "API key exhausted"
+                "apiKeyDisabled" -> DomainError.ApiKeyDisabled(
+                    errorMessage ?: ErrorMessage.API_KEY_DISABLED
                 )
 
-                "apiKeyInvalid" -> DomainError.ApiKeyInvalid(errorMessage ?: "API key invalid")
-                "apiKeyMissing" -> DomainError.ApiKeyMissing(errorMessage ?: "API key missing")
-                else -> DomainError.UnexpectedError(errorMessage ?: "Unexpected error occurred")
+                "apiKeyExhausted" -> DomainError.ApiKeyExhausted(
+                    errorMessage ?: ErrorMessage.API_KEY_EXHAUSTED
+                )
+
+                "apiKeyInvalid" -> DomainError.ApiKeyInvalid(
+                    errorMessage ?: ErrorMessage.API_KEY_INVALID
+                )
+
+                "apiKeyMissing" -> DomainError.ApiKeyMissing(
+                    errorMessage ?: ErrorMessage.API_KEY_MISSING
+                )
+
+                else -> DomainError.UnexpectedError(errorMessage ?: ErrorMessage.UNEXPECTED_ERROR)
             }
         }
 
         429 -> {
             when (errorCode) {
-                "rateLimited" -> DomainError.RateLimited(errorMessage ?: "Rate limited")
-                else -> DomainError.UnexpectedError(errorMessage ?: "Unexpected error occurred")
+                "rateLimited" -> DomainError.RateLimited(errorMessage ?: ErrorMessage.RATE_LIMITED)
+
+                else -> DomainError.UnexpectedError(errorMessage ?: ErrorMessage.UNEXPECTED_ERROR)
             }
         }
 
         500 -> {
-            DomainError.UnexpectedError(errorMessage ?: "Unexpected error occurred")
+            DomainError.UnexpectedError(errorMessage ?: ErrorMessage.UNEXPECTED_ERROR)
         }
 
         -1 -> {
@@ -51,16 +64,16 @@ fun Result.Error.toDomainError(): DomainError {
                 "SocketTimeoutException",
                 "ConnectException",
                 "UnknownHostException",
-                "SocketException" -> DomainError.NetworkError("Network error occurred")
+                "SocketException" -> DomainError.NetworkError(ErrorMessage.NETWORK_ERROR)
 
-                else -> DomainError.UnexpectedError(errorMessage ?: "Unknown exception occurred")
+                else -> DomainError.UnexpectedError(errorMessage ?: ErrorMessage.UNEXPECTED_ERROR)
             }
         }
 
         -2 -> {
-            DomainError.ParsingError("Parsing error occurred")
+            DomainError.ParsingError(ErrorMessage.PARSING_ERROR)
         }
 
-        else -> DomainError.UnexpectedError(errorMessage ?: "Unexpected error occurred")
+        else -> DomainError.UnexpectedError(errorMessage ?: ErrorMessage.UNEXPECTED_ERROR)
     }
 }
